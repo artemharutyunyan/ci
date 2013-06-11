@@ -33,57 +33,46 @@ For more information, please refer to <http://unlicense.org/>
 
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define MAX_INPUT_SIZE 1024
 
-/** @brief remove the first characater from a given string */
-void shrink(char *input) {
-  unsigned int i = 0;
-  const unsigned int last = strlen(input);
-  char c;
-
-  while (i < last) {
-    input[i] = input[i + 1];
-    ++i;
-  }
+void readln(char *input) {
+  printf("Please enter the first string: ");
+  fgets(input, MAX_INPUT_SIZE, stdin);
+  input[strlen(input) - 1] = '\0';
 }
 
-void dedup(char *input) {
-  unsigned char lookup[256] = { 0 };
+bool areAnagrams(const char *str1, const char *str2) {
+  int lookup[256] = { 0 };
+  const unsigned int len = strlen(str1);
 
-  unsigned int i = 0;
-  while (input[i] != '\0') {
-    if (lookup[input[i]] != 0)
-      /* remove duplicate by shrinking the string */
-      shrink(&input[i]);
-    else {
-      lookup[input[i]] = 1;
-      ++i;
-    }
+  /* just in case :-) */
+  if (strlen(str2) != len)
+    return false;
+
+  unsigned int i;
+  for (i = 0; i < len; ++i) {
+    ++lookup[str1[i]];
+    --lookup[str2[i]];
   }
+
+  for (i = 0; i < len; ++i)
+    if (lookup[i] != 0)
+      return false;
+
+  return true;
 }
 
 int main() {
-  char input[MAX_INPUT_SIZE];
+  char input[2][MAX_INPUT_SIZE];
+  readln(input[0]);
+  readln(input[1]);
 
-  /* Read the string */
-  printf("Please enter the string: ");
-  fgets(input, MAX_INPUT_SIZE, stdin);
-
-  /* Remove the newline */
-  input[strlen(input) - 1] = '\0';
-  dedup(input);
-  printf("The deduplicated string is: %s\n", input);
-
-  /* Test cases */
-  char test[][10] = { "aaaaa", "bsbsbs", "asdfdsa", "qwert", "" };
-  unsigned int i = 0;
-  while (strlen(test[i]) > 0) {
-    printf("Deduplicated version of '%s' is ", test[i]);
-    dedup(test[i]);
-    printf("'%s'\n", test[i]);
-    ++i;
-  }
+  if (areAnagrams(input[0], input[1]))
+    printf("String are anagrams\n");
+  else
+    printf("Strings are not anagrams\n");
 
   return 0;
 }

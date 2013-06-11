@@ -48,6 +48,7 @@ void shrink(char *input) {
   }
 }
 
+/** @brief removes duplicate characters from the string */
 void dedup(char *input) {
   unsigned char lookup[256] = { 0 };
 
