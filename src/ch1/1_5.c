@@ -26,9 +26,9 @@ For more information, please refer to <http://unlicense.org/>
 */
 
 /**
-* @file   1_4.c
+* @file   1_5.c
 * @author Artem Harutyunyan (artem_at_harutyunyan.am)
-* @brief  Excercise 1.4 (Cracking the Coding Interview)
+* @brief  Excercise 1.3 (Cracking the Coding Interview)
 */
 
 #include <stdio.h>
@@ -37,42 +37,57 @@ For more information, please refer to <http://unlicense.org/>
 
 #define MAX_INPUT_SIZE 1024
 
+/** @brief read a line */
 void readln(char *input) {
   printf("Please enter string: ");
   fgets(input, MAX_INPUT_SIZE, stdin);
   input[strlen(input) - 1] = '\0';
 }
 
-bool areAnagrams(const char *str1, const char *str2) {
-  int lookup[256] = { 0 };
-  const unsigned int len = strlen(str1);
+/** @brief stretch a given string */
+bool stretch(char *input, const int n) {
 
-  /* just in case :-) */
-  if (strlen(str2) != len)
+  const unsigned int len = strlen(input);
+  if (len + n > MAX_INPUT_SIZE)
     return false;
 
-  unsigned int i;
-  for (i = 0; i < len; ++i) {
-    ++lookup[str1[i]];
-    --lookup[str2[i]];
-  }
+  int i;
+  for (i = len + n; (i - n) >= 0; --i)
+    input[i] = input[i - n];
 
-  for (i = 0; i < len; ++i)
-    if (lookup[i] != 0)
-      return false;
+  return true;
+}
+
+/** @brief substitute spaces with '%20' */
+bool percencode(char *input) {
+
+  unsigned int i = 0;
+  while (input[i] != '\0') {
+    if (input[i] == ' ') {
+      if (stretch(&input[i], 2) != true) {
+        printf("Error: ran out of memory limit.");
+        return false;
+      }
+      input[i] = '%';
+      input[i + 1] = '2';
+      input[i + 2] = '0';
+      i += 3;
+    } else
+      ++i;
+  }
 
   return true;
 }
 
 int main() {
-  char input[2][MAX_INPUT_SIZE];
-  readln(input[0]);
-  readln(input[1]);
+  char input[MAX_INPUT_SIZE] = { '0' };
 
-  if (areAnagrams(input[0], input[1]))
-    printf("String are anagrams\n");
-  else
-    printf("Strings are not anagrams\n");
+  /* Read the string */
+  readln(input);
+
+  /* Substitute spaces with '%20' */
+  if (percencode(input) == true)
+    printf("'%s'", input);
 
   return 0;
 }
