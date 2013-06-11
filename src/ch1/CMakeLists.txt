@@ -1,0 +1,3 @@
+ADD_EXECUTABLE(ctci_1_1 1_1.c)
+ADD_EXECUTABLE(ctci_1_2 1_2.c)
+ADD_EXECUTABLE(ctci_1_3 1_3.c)
